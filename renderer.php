@@ -1,0 +1,128 @@
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Renderer for outputting parts of a question belonging to the
+ * regexp (with help) behaviour.
+ *
+ * @package    qbehaviour
+ * @subpackage regexp
+ * @copyright  2011 Tim Hunt & Joseph Rézeau
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+
+defined('MOODLE_INTERNAL') || die();
+
+require_once(dirname(__FILE__) . '/../adaptive/renderer.php');
+/**
+ * Renderer for outputting parts of a question belonging to the legacy
+ * adaptive behaviour.
+ *
+ * @copyright  2011 Tim Hunt
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_renderer {
+        
+	protected function get_graded_step(question_attempt $qa) {
+        foreach ($qa->get_reverse_step_iterator() as $step) {
+            if ($step->has_behaviour_var('_try')) {
+            	return $step;
+            }
+        }
+    }
+	
+    // display the "Help me" button
+	public function controls(question_attempt $qa, question_display_options $options) {
+        $output = $this->submit_button($qa, $options).'&nbsp;';
+        $attributes = array(
+            'type' => 'submit',
+            'id' => $qa->get_behaviour_field_name('helpme'),
+            'name' => $qa->get_behaviour_field_name('helpme'),
+            'value' => get_string('helpme', 'qbehaviour_regexpadaptivewithhelp'),
+            'class' => 'submit btn',
+        );
+        if ($options->readonly) {
+            $attributes['disabled'] = 'disabled';
+        }
+        $output .= html_writer::empty_tag('input', $attributes);
+        if (!$options->readonly) {
+            $this->page->requires->js_init_call('M.core_question_engine.init_submit_button',
+                    array($attributes['id'], $qa->get_slot()));
+        }
+        return $output;
+    }
+
+    /**
+     * Display the extra help for the student, if it was requested.
+     * @param question_attempt $qa a question attempt.
+     * @param question_display_options $options controls what should and should not be displayed.
+     */
+    //     // $markdp = display options decimal places (for penalty)
+    public function extra_help(question_attempt $qa, question_display_options $options) {
+        return html_writer::nonempty_tag('div', $qa->get_behaviour()->get_extra_help_if_requested($options->markdp));
+    }
+    
+    public function feedback(question_attempt $qa, question_display_options $options) {
+        // Try to find the last graded step.
+        $isstateimprovable = $qa->get_behaviour()->is_state_improvable($qa->get_state());
+        $gradedstep = $this->get_graded_step($qa);
+        if ($gradedstep) {
+	        if ($gradedstep->has_behaviour_var('_helps') ) {
+	        	return $this->extra_help($qa, $options);
+	        }
+        }        
+        if (is_null($gradedstep) || $qa->get_max_mark() == 0 ||
+                $options->marks < question_display_options::MARK_AND_MAX) {
+            return '';
+        }
+                // Display the grading details from the last graded state
+        $mark = new stdClass();
+        $mark->max = $qa->format_max_mark($options->markdp);
+
+        $actualmark = $gradedstep->get_fraction() * $qa->get_max_mark();
+        $mark->cur = format_float($actualmark, $options->markdp);
+
+        $rawmark = $gradedstep->get_behaviour_var('_rawfraction') * $qa->get_max_mark();
+        $mark->raw = format_float($rawmark, $options->markdp);
+
+        // let student know wether the answer was correct
+        if ($qa->get_state()->is_commented()) {
+            $class = $qa->get_state()->get_feedback_class();
+        } else {
+            $class = question_state::graded_state_for_fraction(
+                    $gradedstep->get_behaviour_var('_rawfraction'))->get_feedback_class();
+        }
+
+        $gradingdetails = get_string('gradingdetails', 'qbehaviour_adaptive', $mark);
+        $penalty = $qa->get_question()->penalty;
+        if ($penalty != 0) {
+            $gradingdetails .= $this->penalty_info($qa, $mark, $options);
+        }
+        $output = '';
+        $output .= html_writer::tag('div', get_string($class, 'question'),
+                array('class' => 'correctness ' . $class));
+        $output .= html_writer::tag('div', $gradingdetails,
+                array('class' => 'gradingdetails'));
+        $nbtries = $gradedstep->get_behaviour_var('_try');
+        if ($nbtries && $isstateimprovable) {
+            $totalpenalties = $qa->get_behaviour()->get_help_penalty($nbtries * $penalty, $options->markdp, 'totalpenalties');
+        	$output .= $totalpenalties;
+        }                
+        return $output;
+    }
+}
