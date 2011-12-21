@@ -24,7 +24,10 @@
  */
 
 $string['addedletter'] = 'Added letter: <strong>{$a}</strong>. ';
-$string['helpme'] = 'Help me please';
+$string['completedword'] = 'Completed word: <strong>{$a}</strong>. ';
+$string['addedword'] = 'Added word: <strong>{$a}</strong>. ';
+$string['buyletter'] = 'Buy next letter';
+$string['buyword'] = 'Buy next word';
 $string['helppenalty'] = 'This Help cost you a penalty of: <strong>{$a}</strong>.';
 $string['pluginname'] = 'RegExp Adaptive mode with Help';
 $string['submittedwithhelp'] = 'Submit (with a request for help): {$a}';

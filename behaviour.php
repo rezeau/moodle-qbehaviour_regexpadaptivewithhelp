@@ -154,7 +154,22 @@ require_once(dirname(__FILE__) . '/../adaptive/behaviour.php');
         $output = '';
         $addedletter = $this->get_added_letter($gradedstep);
         if ($addedletter) {
-            $output.= get_string('addedletter', 'qbehaviour_regexpadaptivewithhelp', $addedletter);
+	        $helpmode = $this->question->usehint;
+            switch ($helpmode) {
+                case 1 : $helptext = get_string('addedletter', 'qbehaviour_regexpadaptivewithhelp', $addedletter); break;
+                case 2 : 
+                    $wholeword = preg_match('/^\s.*$/', $addedletter);
+                	if ($wholeword) {
+                        $helptext = get_string('addedword', 'qbehaviour_regexpadaptivewithhelp', $addedletter); break;
+                	} else {
+                		$closest = $this->question->closest;
+                        $pattern = '/[^ ]*$/';
+                        preg_match($pattern, $closest[0], $results);
+                		$addedletter = $results[0];
+                        $helptext = get_string('completedword', 'qbehaviour_regexpadaptivewithhelp', $addedletter); break;
+                	}
+            }        	
+            $output .= $helptext;
         }
         $penalty = $this->question->penalty;
         if ($isstateimprovable && $penalty > 0) {
@@ -184,10 +199,10 @@ require_once(dirname(__FILE__) . '/../adaptive/behaviour.php');
         $textlib = textlib_get_instance();
     	$data = $gradedstep->get_qt_data();
         $answer = $data['answer'];
-        $closest = find_closest($this->question, $answer, $ispreview=false, $correct_response=false, $hintadded = true);
+        $closest = $this->question->closest;
         $addedletter = '';
         if ($answer != $closest[0]) {
-            $addedletter = $textlib->substr($closest[0], -1);
+            $addedletter = $closest[4];
         }
         return $addedletter;
     }

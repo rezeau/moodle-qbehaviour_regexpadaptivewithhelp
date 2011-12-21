@@ -46,14 +46,22 @@ class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_ren
         }
     }
 	
-    // display the "Help me" button
-	public function controls(question_attempt $qa, question_display_options $options) {
+    // display the "Help" button
+	public function controls(question_attempt $qa, question_display_options $options, $helptext='') {
         $output = $this->submit_button($qa, $options).'&nbsp;';
+        $helpmode = $qa->get_question()->usehint;
+        // $helptext will have a value if called from regexpadaptivewithhelpnopenalty
+        if ($helptext == '') {
+	        switch ($helpmode) {
+	            case 1 : $helptext = get_string('buyletter', 'qbehaviour_regexpadaptivewithhelp'); break;
+	            case 2 : $helptext = get_string('buyword', 'qbehaviour_regexpadaptivewithhelp'); break;
+	        }
+        }
         $attributes = array(
             'type' => 'submit',
             'id' => $qa->get_behaviour_field_name('helpme'),
             'name' => $qa->get_behaviour_field_name('helpme'),
-            'value' => get_string('helpme', 'qbehaviour_regexpadaptivewithhelp'),
+            'value' => $helptext,
             'class' => 'submit btn',
         );
         if ($options->readonly) {
