@@ -65,7 +65,8 @@ require_once(dirname(__FILE__) . '/../adaptive/behaviour.php');
         $status = $this->process_save($pendingstep);
 
         $response = $pendingstep->get_qt_data();
-        if (!$this->question->is_gradable_response($response)) {
+        // added 'helpme' condition so student can ask for help with an empty response
+        if (!$this->question->is_gradable_response($response) && !$pendingstep->has_behaviour_var('helpme')) { // JR
             $pendingstep->set_state(question_state::$invalid);
             if ($this->qa->get_state() != question_state::$invalid) {
                 $status = question_attempt::KEEP;
@@ -123,8 +124,7 @@ require_once(dirname(__FILE__) . '/../adaptive/behaviour.php');
     }
 
     public function process_helpme(question_attempt_pending_step $pendingstep) {
-        $keep = $this->process_submit($pendingstep);
-
+        $keep = $this->process_submit($pendingstep); // JR
         if ($keep == question_attempt::KEEP && $pendingstep->get_state() != question_state::$invalid) {
             $prevtries = $this->qa->get_last_behaviour_var('_try', 0);
             $prevhelps = $this->qa->get_last_behaviour_var('_help', 0);

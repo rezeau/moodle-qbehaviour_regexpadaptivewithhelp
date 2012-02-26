@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'qbehaviour_regexpadaptivewithhelp';
-$plugin->version  = 2012010100;
+$plugin->version  = 2012022600;
 
 $plugin->requires = 2011070102.03;
 
