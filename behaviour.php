@@ -19,7 +19,7 @@
  *
  * @package    qbehaviour
  * @subpackage regexpadaptivewithhelp
- * @copyright  2011 Tim Hunt & Joseph Rézeau
+ * @copyright  2011 Tim Hunt & Joseph Rï¿½zeau
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -195,8 +195,6 @@ require_once(dirname(__FILE__) . '/../adaptive/behaviour.php');
     }
     
     public function get_added_letter($gradedstep) {
-        /// Use text services (useful for string functions for non-ascii alphabets)
-        $textlib = textlib_get_instance();
     	$data = $gradedstep->get_qt_data();
         $answer = $data['answer'];
         $closest = $this->question->closest;
