@@ -29,6 +29,6 @@ $plugin->component = 'qbehaviour_regexpadaptivewithhelp';
 $plugin->version  = 2012022600;
 
 $plugin->requires = 2011070102.03;
-
+$plugin->release = '2.3.0 for Moodle 2.3+';
 $plugin->maturity  = MATURITY_STABLE;
 
