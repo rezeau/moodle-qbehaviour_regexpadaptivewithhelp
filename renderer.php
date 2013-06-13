@@ -37,7 +37,7 @@ require_once(dirname(__FILE__) . '/../adaptive/renderer.php');
  */
 
 class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_renderer {
-        
+
 	protected function get_graded_step(question_attempt $qa) {
         foreach ($qa->get_reverse_step_iterator() as $step) {
             if ($step->has_behaviour_var('_try')) {
@@ -45,16 +45,18 @@ class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_ren
             }
         }
     }
-	
-    // display the "Help" button
+
+    // Display the "Help" button.
 	public function controls(question_attempt $qa, question_display_options $options, $helptext='') {
         $output = $this->submit_button($qa, $options).'&nbsp;';
         $helpmode = $qa->get_question()->usehint;
-        // $helptext will have a value if called from regexpadaptivewithhelpnopenalty
+        // ... $helptext will have a value if called from regexpadaptivewithhelpnopenalty.
         if ($helptext == '') {
 	        switch ($helpmode) {
-	            case 1 : $helptext = get_string('buyletter', 'qbehaviour_regexpadaptivewithhelp'); break;
-	            case 2 : $helptext = get_string('buyword', 'qbehaviour_regexpadaptivewithhelp'); break;
+	            case 1 : $helptext = get_string('buyletter', 'qbehaviour_regexpadaptivewithhelp');
+	            break;
+	            case 2 : $helptext = get_string('buyword', 'qbehaviour_regexpadaptivewithhelp');
+	            break;
 	        }
         }
         $attributes = array(
@@ -84,7 +86,7 @@ class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_ren
     public function extra_help(question_attempt $qa, question_display_options $options) {
         return html_writer::nonempty_tag('div', $qa->get_behaviour()->get_extra_help_if_requested($options->markdp));
     }
-    
+
     public function feedback(question_attempt $qa, question_display_options $options) {
         // Try to find the last graded step.
         $gradedstep = $this->get_graded_step($qa);
@@ -92,12 +94,13 @@ class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_ren
 	        if ($gradedstep->has_behaviour_var('_helps') ) {
 	        	return $this->extra_help($qa, $options);
 	        }
-        }        
+        }
         if (is_null($gradedstep) || $qa->get_max_mark() == 0 ||
                 $options->marks < question_display_options::MARK_AND_MAX) {
             return '';
         }
-        // let student know wether the answer was correct
+
+        // Let student know wether the answer was correct.
         if ($qa->get_state()->is_commented()) {
             $class = $qa->get_state()->get_feedback_class();
         } else {
@@ -112,7 +115,7 @@ class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_ren
         $output = '';
         $output .= html_writer::tag('div', $gradingdetails,
                 array('class' => 'gradingdetails'));
-        //$nbtries = $gradedstep->get_behaviour_var('_try');
+
         return $output;
     }
 }

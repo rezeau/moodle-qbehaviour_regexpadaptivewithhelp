@@ -1,6 +1,6 @@
 -----------------------------------------------------------
 regexpadaptivewithhelp QUESTION BEHAVIOUR plugin for Moodle
-by Joseph Rézeau (with help from Tim Hunt)
+by Joseph Rï¿½zeau (with help from Tim Hunt)
 -----------------------------------------------------------
 
 -------------------------------
