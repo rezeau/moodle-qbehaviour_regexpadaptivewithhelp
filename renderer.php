@@ -53,10 +53,14 @@ class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_ren
         // ... $helptext will have a value if called from regexpadaptivewithhelpnopenalty.
         if ($helptext == '') {
 	        switch ($helpmode) {
-	            case 1 : $helptext = get_string('buyletter', 'qbehaviour_regexpadaptivewithhelp');
-	            break;
-	            case 2 : $helptext = get_string('buyword', 'qbehaviour_regexpadaptivewithhelp');
-	            break;
+	            case 1 :
+                    $helptext = get_string('buyletter', 'qbehaviour_regexpadaptivewithhelp');
+                    break;
+                case 2 :
+                    $helptext = get_string('buyword', 'qbehaviour_regexpadaptivewithhelp');
+                    break;
+                case 0 :
+                    return $output;
 	        }
         }
         $attributes = array(
