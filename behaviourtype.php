@@ -15,22 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Question behaviour type specifically for use with the regexpadaptivewithhelp question type.
+ * Question behaviour type for adaptive behaviour.
  *
- * @package   qbehaviour_regexpadaptivewithhelp
- * @copyright 2014 The Open University
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    qbehaviour_adaptive
+ * @copyright  2013 Joseph Rézeau
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once(dirname(__FILE__) . '/../adaptive/behaviourtype.php');
 
 /**
- * Question behaviour type information specifically for use with the regexpadaptivewithhelp question type.
+ * Question behaviour type information for adaptive behaviour.
  *
- * @copyright 2014 The Open University
+ * @copyright  2013 Joseph Rézeau
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class qbehaviour_regexpadaptivewithhelp_type extends question_behaviour_type {
+    public function is_archetypal() {
+        return true;
+    }
 }

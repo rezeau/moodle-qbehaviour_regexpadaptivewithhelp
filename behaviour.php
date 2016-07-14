@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 require_once(dirname(__FILE__) . '/../adaptive/behaviour.php');
 
-    class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
+class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
     const IS_ARCHETYPAL = false;
 
     public function required_question_definition_type() {
@@ -60,13 +60,14 @@ require_once(dirname(__FILE__) . '/../adaptive/behaviour.php');
             return parent::process_action($pendingstep);
         }
     }
-    
+
     public function process_submit(question_attempt_pending_step $pendingstep) {
         $status = $this->process_save($pendingstep);
 
         $response = $pendingstep->get_qt_data();
-        // added 'helpme' condition so student can ask for help with an empty response
-        if (!$this->question->is_gradable_response($response) && !$pendingstep->has_behaviour_var('helpme')) { // JR
+
+        // Added 'helpme' condition so student can ask for help with an empty response.
+        if (!$this->question->is_gradable_response($response) && !$pendingstep->has_behaviour_var('helpme')) {
             $pendingstep->set_state(question_state::$invalid);
             if ($this->qa->get_state() != question_state::$invalid) {
                 $status = question_attempt::KEEP;
@@ -82,11 +83,11 @@ require_once(dirname(__FILE__) . '/../adaptive/behaviour.php');
             $prevbest = 0;
         }
 
-        // added 'helpme' condition so question attempt would not be DISCARDED when student asks for help        
+        // Added 'helpme' condition so question attempt would not be DISCARDED when student asks for help.
         if ($this->question->is_same_response($response, $prevresponse) && !$pendingstep->has_behaviour_var('helpme') ) {
             return question_attempt::DISCARD;
         }
-        
+
         list($fraction, $state) = $this->question->grade_response($response);
 
         $pendingstep->set_fraction(max($prevbest, $this->adjusted_fraction($fraction, $prevtries)));
@@ -103,7 +104,7 @@ require_once(dirname(__FILE__) . '/../adaptive/behaviour.php');
 
         return question_attempt::KEEP;
     }
-    
+
     public function summarise_action(question_attempt_step $step) {
         if ($step->has_behaviour_var('helpme')) {
             return $this->summarise_helpme($step);
@@ -124,7 +125,7 @@ require_once(dirname(__FILE__) . '/../adaptive/behaviour.php');
     }
 
     public function process_helpme(question_attempt_pending_step $pendingstep) {
-        $keep = $this->process_submit($pendingstep); // JR
+        $keep = $this->process_submit($pendingstep);
         if ($keep == question_attempt::KEEP && $pendingstep->get_state() != question_state::$invalid) {
             $prevtries = $this->qa->get_last_behaviour_var('_try', 0);
             $prevhelps = $this->qa->get_last_behaviour_var('_help', 0);
@@ -141,9 +142,6 @@ require_once(dirname(__FILE__) . '/../adaptive/behaviour.php');
         return $keep;
     }
 
-    /* 
-     * $dp = display options decimal places (for penalty)
-    */
     public function get_extra_help_if_requested($dp) {
         // Try to find the last graded step.
         $gradedstep = $this->get_graded_step($this->qa);
@@ -156,11 +154,13 @@ require_once(dirname(__FILE__) . '/../adaptive/behaviour.php');
         if ($addedletter) {
 	        $helpmode = $this->question->usehint;
             switch ($helpmode) {
-                case 1 : $helptext = get_string('addedletter', 'qbehaviour_regexpadaptivewithhelp', $addedletter); break;
-                case 2 : 
+                case 1 : $helptext = get_string('addedletter', 'qbehaviour_regexpadaptivewithhelp', $addedletter);
+                    break;
+                case 2 :
                     $wholeword = preg_match('/^\s.*$/', $addedletter);
                 	if ($wholeword) {
-                        $helptext = get_string('addedword', 'qbehaviour_regexpadaptivewithhelp', $addedletter); break;
+                        $helptext = get_string('addedword', 'qbehaviour_regexpadaptivewithhelp', $addedletter);
+                        break;
                 	} else {
                 		$closest = $this->question->closest;
                         $pattern = '/[^ ]*$/';
@@ -168,7 +168,7 @@ require_once(dirname(__FILE__) . '/../adaptive/behaviour.php');
                 		$addedletter = $results[0];
                         $helptext = get_string('completedword', 'qbehaviour_regexpadaptivewithhelp', $addedletter); break;
                 	}
-            }        	
+            }
             $output .= $helptext;
         }
         $penalty = $this->question->penalty;
@@ -182,10 +182,10 @@ require_once(dirname(__FILE__) . '/../adaptive/behaviour.php');
         }
         return $output;
     }
-    
+
     public function get_help_penalty($penalty, $dp, $penaltystring) {
         $helppenalty = format_float($penalty, $dp);
-        // if total of help penalties >= 1 then display total in red
+        // If total of help penalties >= 1 then display total in red.
         if ($helppenalty >= 1) {
         	$helppenalty = '<span class="flagged-tag">' .$helppenalty . '<span>';
         }
@@ -193,7 +193,7 @@ require_once(dirname(__FILE__) . '/../adaptive/behaviour.php');
         $output.= get_string($penaltystring, 'qbehaviour_regexpadaptivewithhelp', $helppenalty).' ';
         return $output;
     }
-    
+
     public function get_added_letter($gradedstep) {
     	$data = $gradedstep->get_qt_data();
         $answer = $data['answer'];
@@ -204,5 +204,5 @@ require_once(dirname(__FILE__) . '/../adaptive/behaviour.php');
         }
         return $addedletter;
     }
-    
+
 }

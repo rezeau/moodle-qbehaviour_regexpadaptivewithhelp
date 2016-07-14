@@ -1,6 +1,6 @@
------------------------------------------------------------
+﻿-----------------------------------------------------------
 regexpadaptivewithhelp QUESTION BEHAVIOUR plugin for Moodle
-by Joseph R�zeau (with help from Tim Hunt)
+by Joseph Rézeau (with help from Tim Hunt)
 -----------------------------------------------------------
 
 -------------------------------
@@ -28,4 +28,4 @@ HOW TO USE
 This plugin is one of the 2 question behaviours to be used exclusively with the regexp question type.
 They enable you to take advantage of the *Help* feature, which allows the student to "buy" a letter.
 
-Online Documentation at http://docs.moodle.org/20/en/Regular_Expression_Short-Answer_question_type.
+Online Documentation at http://docs.moodle.org/25/en/Regular_Expression_Short-Answer_question_type.

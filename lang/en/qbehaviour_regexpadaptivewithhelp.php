@@ -19,7 +19,7 @@
  *
  * @package    qbehaviour
  * @subpackage regexpadaptivewithhelp
- * @copyright  2011 Joseph Rézeau
+ * @copyright  2011 Joseph RÃ©zeau
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -31,4 +31,4 @@ $string['buyword'] = 'Buy next word';
 $string['helppenalty'] = 'This Help cost you a penalty of: <strong>{$a}</strong>.';
 $string['pluginname'] = 'RegExp Adaptive mode with Help';
 $string['submittedwithhelp'] = 'Submit (with a request for help): {$a}';
-$string['totalpenalties'] = 'Total penatlies so far: <strong>{$a}</strong>.';
+$string['totalpenalties'] = 'Total penalties so far: <strong>{$a}</strong>.';
