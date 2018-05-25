@@ -32,3 +32,5 @@ $string['helppenalty'] = 'This Help cost you a penalty of: <strong>{$a}</strong>
 $string['pluginname'] = 'RegExp Adaptive mode with Help';
 $string['submittedwithhelp'] = 'Submit (with a request for help): {$a}';
 $string['totalpenalties'] = 'Total penalties so far: <strong>{$a}</strong>.';
+$string['privacy:metadata'] = 'The RegExp Adaptive mode with Help question behaviour plugin does not store any personal data.';
+
