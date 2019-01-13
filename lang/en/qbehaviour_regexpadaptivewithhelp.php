@@ -23,11 +23,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['addedletter'] = 'Added letter: <strong>{$a}</strong>. ';
-$string['completedword'] = 'Completed word: <strong>{$a}</strong>. ';
-$string['addedword'] = 'Added word: <strong>{$a}</strong>. ';
+$string['addedletter'] = 'Added letter: <strong>{$a}</strong> ';
+$string['completedword'] = 'Completed word: <strong>{$a}</strong> ';
+$string['addedword'] = 'Added word: <strong>{$a}</strong> ';
+$string['addedpunctuation'] = 'Added punctuation: <strong>{$a}</strong> ';
 $string['buyletter'] = 'Buy next letter';
 $string['buyword'] = 'Buy next word';
+$string['buywordorpunctuation'] = 'Buy next word or punctuation';
 $string['helppenalty'] = 'This Help cost you a penalty of: <strong>{$a}</strong>.';
 $string['pluginname'] = 'RegExp Adaptive mode with Help';
 $string['submittedwithhelp'] = 'Submit (with a request for help): {$a}';

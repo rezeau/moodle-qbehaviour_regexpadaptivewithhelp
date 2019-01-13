@@ -38,10 +38,10 @@ require_once(dirname(__FILE__) . '/../adaptive/renderer.php');
 
 class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_renderer {
 
-	protected function get_graded_step(question_attempt $qa) {
+    protected function get_graded_step(question_attempt $qa) {
         foreach ($qa->get_reverse_step_iterator() as $step) {
             if ($step->has_behaviour_var('_try')) {
-            	return $step;
+                return $step;
             }
         }
     }
@@ -51,14 +51,18 @@ class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_ren
         $helptexts = array();
         $helptexts[1] = get_string('buyletter', 'qbehaviour_regexpadaptivewithhelp');
         $helptexts[2] = get_string('buyword', 'qbehaviour_regexpadaptivewithhelp');
+        $helptexts[3] = get_string('buywordorpunctuation', 'qbehaviour_regexpadaptivewithhelp');
         return $helptexts;
     }
 
     // Display the "Help" button.
-	public function controls(question_attempt $qa, question_display_options $options, $helptext='') {
+    public function controls(question_attempt $qa, question_display_options $options, $helptext='') {
+        // If student's answer is no longer improvable, then there's no point enabling the hint button.
+        $isimprovable = $qa->get_behaviour()->is_state_improvable($qa->get_state());
         $output = $this->submit_button($qa, $options).'&nbsp;';
         $helpmode = $qa->get_question()->usehint;
-        if ($helpmode === 0) {
+
+        if ($helpmode == 0 || $options->readonly || !$isimprovable) {
             return $output;
         }
         $helptext = $this->help_msg()[$helpmode];
@@ -69,14 +73,11 @@ class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_ren
             'value' => $helptext,
             'class' => 'submit btn',
         );
-        if ($options->readonly) {
-            $attributes['disabled'] = 'disabled';
-        }
+
+        $attributes['round'] = true;
         $output .= html_writer::empty_tag('input', $attributes);
-        if (!$options->readonly) {
             $this->page->requires->js_init_call('M.core_question_engine.init_submit_button',
                     array($attributes['id'], $qa->get_slot()));
-        }
         return $output;
     }
 
@@ -94,9 +95,9 @@ class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_ren
         // Try to find the last graded step.
         $gradedstep = $this->get_graded_step($qa);
         if ($gradedstep) {
-	        if ($gradedstep->has_behaviour_var('_helps') ) {
-	        	return $this->extra_help($qa, $options);
-	        }
+            if ($gradedstep->has_behaviour_var('_helps') ) {
+                return $this->extra_help($qa, $options);
+            }
         }
         if (is_null($gradedstep) || $qa->get_max_mark() == 0 ||
                 $options->marks < question_display_options::MARK_AND_MAX) {

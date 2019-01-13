@@ -17,18 +17,28 @@
 /**
  * Question behaviour for regexp question type (with help).
  *
- * @package    qbehaviour
- * @subpackage regexpadaptivewithhelp
- * @copyright  2011 Tim Hunt & Joseph R�zeau
+ * @package    qbehaviour_regexpadaptivewithhelp
+ * @copyright  2011 Tim Hunt & Joseph Rézeau
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 require_once(dirname(__FILE__) . '/../adaptive/behaviour.php');
 
+/**
+ * Question behaviour for regexp question type (with help).
+ * @copyright  2011 Tim Hunt & Joseph Rézeau
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
+    /**
+     * Question behaviour for regexp question type (with help).
+     */
     const IS_ARCHETYPAL = false;
 
+    /**
+     * Question behaviour for regexp question type (with help).
+     */
     public function required_question_definition_type() {
         return 'question_automatically_gradable';
     }
@@ -45,6 +55,9 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
         }
     }
 
+    /**
+    * Question behaviour for regexp question type (with help).
+    */
     public function get_expected_data() {
         $expected = parent::get_expected_data();
         if ($this->qa->get_state()->is_active()) {
@@ -53,6 +66,12 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
         return $expected;
     }
 
+    /**
+    * Question behaviour for regexp question type (with help)
+    *
+    * @param question_attempt_pending_step $pendingstep
+    * @return array
+    */
     public function process_action(question_attempt_pending_step $pendingstep) {
         if ($pendingstep->has_behaviour_var('helpme')) {
             return $this->process_helpme($pendingstep);
@@ -61,6 +80,11 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
         }
     }
 
+    /**
+    * Question behaviour for regexp question type (with help).
+    * @param question_attempt_pending_step $pendingstep
+    * @return mixed
+    */
     public function process_submit(question_attempt_pending_step $pendingstep) {
         $status = $this->process_save($pendingstep);
 
@@ -105,6 +129,10 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
         return question_attempt::KEEP;
     }
 
+    /**
+    * Question behaviour for regexp question type (with help).
+    * @param question_attempt_step $step
+    */
     public function summarise_action(question_attempt_step $step) {
         if ($step->has_behaviour_var('helpme')) {
             return $this->summarise_helpme($step);
@@ -113,17 +141,33 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
         }
     }
 
+    /**
+    * Question behaviour for regexp question type (with help).
+    * @param question_attempt_step $step
+    */
     public function summarise_helpme(question_attempt_step $step) {
         return get_string('submittedwithhelp', 'qbehaviour_regexpadaptivewithhelp',
                 $this->question->summarise_response_withhelp($step->get_qt_data()));
     }
 
+    /**
+    * Question behaviour for regexp question type (with help)
+    * @param int $fraction
+    * @param int $prevtries
+    * @param bool $helpnow
+    * @return int
+    */
     protected function adjusted_fraction($fraction, $prevtries, $helpnow = 0) {
         $numhelps = $this->qa->get_last_behaviour_var('_helps') + $helpnow;
         return $fraction - $this->question->penalty * ($prevtries - $numhelps) -
                 $this->question->penalty * $numhelps;
     }
 
+    /**
+    * Question behaviour for regexp question type (with help).
+    * @param question_attempt_pending_step $pendingstep
+    * @return mixed
+    */
     public function process_helpme(question_attempt_pending_step $pendingstep) {
         $keep = $this->process_submit($pendingstep);
         if ($keep == question_attempt::KEEP && $pendingstep->get_state() != question_state::$invalid) {
@@ -142,6 +186,11 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
         return $keep;
     }
 
+    /**
+    * Question behaviour for regexp question type (with help).
+    * @param string $dp
+    * @return string
+    */
     public function get_extra_help_if_requested($dp) {
         // Try to find the last graded step.
         $gradedstep = $this->get_graded_step($this->qa);
@@ -152,22 +201,44 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
         $output = '';
         $addedletter = $this->get_added_letter($gradedstep);
         if ($addedletter) {
-	        $helpmode = $this->question->usehint;
+            $helpmode = $this->question->usehint;
             switch ($helpmode) {
                 case 1 : $helptext = get_string('addedletter', 'qbehaviour_regexpadaptivewithhelp', $addedletter);
                     break;
                 case 2 :
                     $wholeword = preg_match('/^\s.*$/', $addedletter);
-                	if ($wholeword) {
+                    if ($wholeword) {
                         $helptext = get_string('addedword', 'qbehaviour_regexpadaptivewithhelp', $addedletter);
                         break;
-                	} else {
-                		$closest = $this->question->closest;
+                    } else {
+                        $closest = rtrim($this->question->closest[0]);
                         $pattern = '/[^ ]*$/';
-                        preg_match($pattern, $closest[0], $results);
-                		$addedletter = $results[0];
-                        $helptext = get_string('completedword', 'qbehaviour_regexpadaptivewithhelp', $addedletter); break;
-                	}
+                        preg_match($pattern, $closest, $results);
+                        $addedletter = $results[0];
+                        $helptext = get_string('completedword', 'qbehaviour_regexpadaptivewithhelp', $addedletter);
+                        break;
+                    }
+                case 3 :
+                    $pattern = '/((?<!\w)[\p{P}]|[\p{P}](?!\w))/';
+                    $ispunctuation = preg_match($pattern, $addedletter);
+                    if ($ispunctuation) {
+                        $helptext = get_string('addedpunctuation', 'qbehaviour_regexpadaptivewithhelp', $addedletter);
+                        break;
+                    }
+
+                    $wholeword = preg_match('/^\s.*$/', $addedletter);
+                    $isafterpunctuation = preg_match('/[\p{P}]/', $this->question->closest[1], $m, null, -1);
+                    if ($wholeword || $isafterpunctuation) {
+                        $helptext = get_string('addedword', 'qbehaviour_regexpadaptivewithhelp', $addedletter);
+                        break;
+                    }
+                    $closest = rtrim($this->question->closest[0]);
+
+                    $pattern = '/[^ ]*$/';
+                    preg_match($pattern, $closest, $results);
+                    $addedletter = $results[0];
+                    $helptext = get_string('completedword', 'qbehaviour_regexpadaptivewithhelp', $addedletter);
+                    break;
             }
             $output .= $helptext;
         }
@@ -178,24 +249,36 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
             $totalpenalties = '';
             $helppenalty = $this->get_help_penalty($penalty, $dp, 'helppenalty');
             $totalpenalties = $this->get_help_penalty($nbtries * $penalty, $dp, 'totalpenalties');
-            $output.= $helppenalty. $totalpenalties;
+            $output .= $helppenalty. $totalpenalties;
         }
         return $output;
     }
 
+    /**
+    * Question behaviour for regexp question type (with help).
+    * @param string $penalty
+    * @param string $dp
+    * @param string $penaltystring
+    * @return string
+    */
     public function get_help_penalty($penalty, $dp, $penaltystring) {
         $helppenalty = format_float($penalty, $dp);
         // If total of help penalties >= 1 then display total in red.
         if ($helppenalty >= 1) {
-        	$helppenalty = '<span class="flagged-tag">' .$helppenalty . '<span>';
+            $helppenalty = '<span class="flagged-tag">' .$helppenalty . '<span>';
         }
         $output = '';
-        $output.= get_string($penaltystring, 'qbehaviour_regexpadaptivewithhelp', $helppenalty).' ';
+        $output .= get_string($penaltystring, 'qbehaviour_regexpadaptivewithhelp', $helppenalty).' ';
         return $output;
     }
 
+    /**
+    * Question behaviour for regexp question type (with help).
+    * @param array $gradedstep
+    * @return string
+    */
     public function get_added_letter($gradedstep) {
-    	$data = $gradedstep->get_qt_data();
+        $data = $gradedstep->get_qt_data();
         $answer = $data['answer'];
         $closest = $this->question->closest;
         $addedletter = '';

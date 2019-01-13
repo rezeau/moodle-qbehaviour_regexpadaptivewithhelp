@@ -35,6 +35,6 @@ require_once(dirname(__FILE__) . '/../adaptive/behaviourtype.php');
  */
 class qbehaviour_regexpadaptivewithhelp_type extends question_behaviour_type {
     public function is_archetypal() {
-        return true;
+        return false;
     }
 }
