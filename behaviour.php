@@ -56,8 +56,8 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
     }
 
     /**
-    * Question behaviour for regexp question type (with help).
-    */
+     * Question behaviour for regexp question type (with help).
+     */
     public function get_expected_data() {
         $expected = parent::get_expected_data();
         if ($this->qa->get_state()->is_active()) {
@@ -67,11 +67,11 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
     }
 
     /**
-    * Question behaviour for regexp question type (with help)
-    *
-    * @param question_attempt_pending_step $pendingstep
-    * @return array
-    */
+     * Question behaviour for regexp question type (with help)
+     *
+     * @param question_attempt_pending_step $pendingstep
+     * @return array
+     */
     public function process_action(question_attempt_pending_step $pendingstep) {
         if ($pendingstep->has_behaviour_var('helpme')) {
             return $this->process_helpme($pendingstep);
@@ -81,10 +81,10 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
     }
 
     /**
-    * Question behaviour for regexp question type (with help).
-    * @param question_attempt_pending_step $pendingstep
-    * @return mixed
-    */
+     * Question behaviour for regexp question type (with help).
+     * @param question_attempt_pending_step $pendingstep
+     * @return mixed
+     */
     public function process_submit(question_attempt_pending_step $pendingstep) {
         $status = $this->process_save($pendingstep);
 
@@ -130,9 +130,9 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
     }
 
     /**
-    * Question behaviour for regexp question type (with help).
-    * @param question_attempt_step $step
-    */
+     * Question behaviour for regexp question type (with help).
+     * @param question_attempt_step $step
+     */
     public function summarise_action(question_attempt_step $step) {
         if ($step->has_behaviour_var('helpme')) {
             return $this->summarise_helpme($step);
@@ -142,21 +142,21 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
     }
 
     /**
-    * Question behaviour for regexp question type (with help).
-    * @param question_attempt_step $step
-    */
+     * Question behaviour for regexp question type (with help).
+     * @param question_attempt_step $step
+     */
     public function summarise_helpme(question_attempt_step $step) {
         return get_string('submittedwithhelp', 'qbehaviour_regexpadaptivewithhelp',
                 $this->question->summarise_response_withhelp($step->get_qt_data()));
     }
 
     /**
-    * Question behaviour for regexp question type (with help)
-    * @param int $fraction
-    * @param int $prevtries
-    * @param bool $helpnow
-    * @return int
-    */
+     * Question behaviour for regexp question type (with help)
+     * @param int $fraction
+     * @param int $prevtries
+     * @param bool $helpnow
+     * @return int
+     */
     protected function adjusted_fraction($fraction, $prevtries, $helpnow = 0) {
         $numhelps = $this->qa->get_last_behaviour_var('_helps') + $helpnow;
         return $fraction - $this->question->penalty * ($prevtries - $numhelps) -
@@ -164,10 +164,10 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
     }
 
     /**
-    * Question behaviour for regexp question type (with help).
-    * @param question_attempt_pending_step $pendingstep
-    * @return mixed
-    */
+     * Question behaviour for regexp question type (with help).
+     * @param question_attempt_pending_step $pendingstep
+     * @return mixed
+     */
     public function process_helpme(question_attempt_pending_step $pendingstep) {
         $keep = $this->process_submit($pendingstep);
         if ($keep == question_attempt::KEEP && $pendingstep->get_state() != question_state::$invalid) {
@@ -187,10 +187,10 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
     }
 
     /**
-    * Question behaviour for regexp question type (with help).
-    * @param string $dp
-    * @return string
-    */
+     * Question behaviour for regexp question type (with help).
+     * @param string $dp
+     * @return string
+     */
     public function get_extra_help_if_requested($dp) {
         // Try to find the last graded step.
         $gradedstep = $this->get_graded_step($this->qa);
@@ -255,12 +255,12 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
     }
 
     /**
-    * Question behaviour for regexp question type (with help).
-    * @param string $penalty
-    * @param string $dp
-    * @param string $penaltystring
-    * @return string
-    */
+     * Question behaviour for regexp question type (with help).
+     * @param string $penalty
+     * @param string $dp
+     * @param string $penaltystring
+     * @return string
+     */
     public function get_help_penalty($penalty, $dp, $penaltystring) {
         $helppenalty = format_float($penalty, $dp);
         // If total of help penalties >= 1 then display total in red.
@@ -273,10 +273,10 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
     }
 
     /**
-    * Question behaviour for regexp question type (with help).
-    * @param array $gradedstep
-    * @return string
-    */
+     * Question behaviour for regexp question type (with help).
+     * @param array $gradedstep
+     * @return string
+     */
     public function get_added_letter($gradedstep) {
         $data = $gradedstep->get_qt_data();
         $answer = $data['answer'];
