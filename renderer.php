@@ -66,12 +66,13 @@ class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_ren
             return $output;
         }
         $helptext = $this->help_msg()[$helpmode];
+        // JR dec 2020 added btn-secondary for button display similar to default question check button.
         $attributes = array(
             'type' => 'submit',
             'id' => $qa->get_behaviour_field_name('helpme'),
             'name' => $qa->get_behaviour_field_name('helpme'),
             'value' => $helptext,
-            'class' => 'submit btn',
+            'class' => 'submit btn btn-secondary',
         );
 
         $attributes['round'] = true;
