@@ -19,15 +19,15 @@
  *
  * @package    qbehaviour
  * @subpackage regexpadaptivewithhelp
- * @copyright  2011-2012 Joseph Rézeau
+ * @copyright  2011-2021 Joseph Rézeau
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'qbehaviour_regexpadaptivewithhelp';
-$plugin->version  = 2020121600;
+$plugin->version  = 2021052300;
 $plugin->requires = 2016052300; // Moodle version.
-$plugin->release = '3.10.1 for Moodle 3.10';
+$plugin->release = '3.11.0 for Moodle 3.11';
 $plugin->maturity  = MATURITY_STABLE;
 

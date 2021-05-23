@@ -61,31 +61,31 @@ class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_ren
         $isimprovable = $qa->get_behaviour()->is_state_improvable($qa->get_state());
         $output = $this->submit_button($qa, $options).'&nbsp;';
         $helpmode = $qa->get_question()->usehint;
-        
+
         // JR DEC 2020 Do not display the Help button if it has just been clicked for help!
         $helprequested = false;
         $gradedstep = $this->get_graded_step($qa);
         $response = $qa->get_last_qt_data();
         $question = $qa->get_question(false);
         $closest = $question->closest;
-        
+
         if ($gradedstep && $gradedstep->has_behaviour_var('_helps') ) {
             $helprequested = true;
-        } 
-        
+        }
+
         // Check if error consists of misplaced words ONLY, no wrong words.
         $overflow = false;
-        if ($closest && $response) {        
-            $t = TRUE;
-            $guesserrors = $closest[5];  
+        if ($closest && $response) {
+            $t = true;
+            $guesserrors = $closest[5];
             if ($guesserrors == 11) {
-               $t = FALSE; 
-            }          
+                $t = false;
+            }
             if (($response['answer'] > $closest[0]) && $t) {
                 $overflow = true;
             }
         }
-        
+
         // Do NOT display the Help (word or letter) button in those cases.
         if ($helpmode == 0 || $options->readonly || !$isimprovable || $helprequested === true || $overflow) {
             return $output;
@@ -146,5 +146,5 @@ class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_ren
 
         return $output;
     }
-        
+
 }
