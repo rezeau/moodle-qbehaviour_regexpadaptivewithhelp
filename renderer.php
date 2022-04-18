@@ -15,10 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Renderer for outputting parts of a question belonging to the
- * regexp (with help) behaviour.
+ * Renderer for outputting parts of a question belonging to the regexp (with help) behaviour.
  *
- * @package    qbehaviour
+ * @package    qbehaviour_regexpadaptivewithhelp
  * @subpackage regexp
  * @copyright  2011 Tim Hunt & Joseph R�zeau
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -28,16 +27,15 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once(dirname(__FILE__) . '/../adaptive/renderer.php');
+
 /**
- * Renderer for outputting parts of a question belonging to the legacy
- * adaptive behaviour.
- *
- * @copyright  2011 Tim Hunt
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Renderer for outputting parts of a question belonging to the legacy adaptive behaviour.
  */
-
 class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_renderer {
-
+    /**
+     * Get graded step.
+     * @param question_attempt $qa a question attempt.
+     */
     protected function get_graded_step(question_attempt $qa) {
         foreach ($qa->get_reverse_step_iterator() as $step) {
             if ($step->has_behaviour_var('_try')) {
@@ -46,7 +44,9 @@ class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_ren
         }
     }
 
-    // Moved help strings to this function to get appropriate strings for the nopenalty behaviour.
+    /**
+     * Moved help strings to this function to get appropriate strings for the nopenalty behaviour.
+     */
     public function help_msg() {
         $helptexts = array();
         $helptexts[1] = get_string('buyletter', 'qbehaviour_regexpadaptivewithhelp');
@@ -54,8 +54,12 @@ class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_ren
         $helptexts[3] = get_string('buywordorpunctuation', 'qbehaviour_regexpadaptivewithhelp');
         return $helptexts;
     }
-
-    // Display the "Help" button.
+    /**
+     * Display the "Help" button.
+     * @param question_attempt $qa a question attempt.
+     * @param question_display_options $options controls what should and should not be displayed.
+     * @param text $helptext the help text.
+     */
     public function controls(question_attempt $qa, question_display_options $options, $helptext='') {
         // If student's answer is no longer improvable, then there's no point enabling the hint button.
         $isimprovable = $qa->get_behaviour()->is_state_improvable($qa->get_state());
@@ -110,11 +114,14 @@ class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_ren
      * @param question_attempt $qa a question attempt.
      * @param question_display_options $options controls what should and should not be displayed.
      */
-
     public function extra_help(question_attempt $qa, question_display_options $options) {
         return html_writer::nonempty_tag('div', $qa->get_behaviour()->get_extra_help_if_requested($options->markdp));
     }
-
+    /**
+     * Display feedback.
+     * @param question_attempt $qa a question attempt.
+     * @param question_display_options $options controls what should and should not be displayed.
+     */
     public function feedback(question_attempt $qa, question_display_options $options) {
         // Try to find the last graded step.
         $gradedstep = $this->get_graded_step($qa);

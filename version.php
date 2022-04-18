@@ -17,17 +17,17 @@
 /**
  * Version information for the calculated question type.
  *
- * @package    qbehaviour
+ * @package    qbehaviour_regexpadaptivewithhelp
  * @subpackage regexpadaptivewithhelp
- * @copyright  2011-2021 Joseph Rézeau
+ * @copyright  2011-2022 Joseph Rézeau
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'qbehaviour_regexpadaptivewithhelp';
-$plugin->version  = 2021052300;
+$plugin->version  = 2022041800;
 $plugin->requires = 2016052300; // Moodle version.
-$plugin->release = '3.11.0 for Moodle 3.11';
+$plugin->release = '4.0 for Moodle 4.0';
 $plugin->maturity  = MATURITY_STABLE;
 
