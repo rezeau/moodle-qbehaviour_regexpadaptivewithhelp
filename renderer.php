@@ -143,6 +143,7 @@ class qbehaviour_regexpadaptivewithhelp_renderer extends qbehaviour_adaptive_ren
                     $gradedstep->get_behaviour_var('_rawfraction'))->get_feedback_class();
         }
         $penalty = $qa->get_question()->penalty;
+        $gradingdetails = '';
         if ($penalty != 0) {
             $gradingdetails = $this->render_adaptive_marks(
                 $qa->get_behaviour()->get_adaptive_marks(), $options);

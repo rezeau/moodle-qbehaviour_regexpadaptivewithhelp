@@ -199,6 +199,7 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
             return '';
         }
         $output = '';
+        $helptext = '';
         $addedletter = $this->get_added_letter($gradedstep);
         if ($addedletter) {
             $helpmode = $this->question->usehint;
@@ -208,6 +209,7 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
                 case 2 :
                     $wholeword = preg_match('/^\s.*$/', $addedletter);
                     if ($wholeword) {
+                        $addedletter = trim($addedletter);
                         $helptext = get_string('addedword', 'qbehaviour_regexpadaptivewithhelp', $addedletter);
                         break;
                     } else {
@@ -227,7 +229,7 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
                     }
 
                     $wholeword = preg_match('/^\s.*$/', $addedletter);
-                    $isafterpunctuation = preg_match('/[\p{P}]/', $this->question->closest[1], $m, null, -1);
+                    $isafterpunctuation = preg_match('/[\p{P}]/', $this->question->closest[1], $m, 0, -1);
                     if ($wholeword || $isafterpunctuation) {
                         $helptext = get_string('addedword', 'qbehaviour_regexpadaptivewithhelp', $addedletter);
                         break;
