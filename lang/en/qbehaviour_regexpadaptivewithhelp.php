@@ -24,15 +24,15 @@
  */
 
 $string['addedletter'] = 'Added letter: <strong>{$a}</strong> ';
-$string['completedword'] = 'Completed word: <strong>{$a}</strong> ';
-$string['addedword'] = 'Added word: <strong>{$a}</strong> ';
 $string['addedpunctuation'] = 'Added punctuation: <strong>{$a}</strong> ';
+$string['addedword'] = 'Added word: <strong>{$a}</strong> ';
 $string['buyletter'] = 'Buy next letter';
 $string['buyword'] = 'Buy next word';
 $string['buywordorpunctuation'] = 'Buy next word or punctuation';
+$string['completedword'] = 'Completed word: <strong>{$a}</strong> ';
 $string['helppenalty'] = 'This Help cost you a penalty of: <strong>{$a}</strong>.';
 $string['pluginname'] = 'RegExp Adaptive mode with Help';
+$string['privacy:metadata'] = 'The RegExp Adaptive mode with Help question behaviour plugin does not store any personal data.';
 $string['submittedwithhelp'] = 'Submit (with a request for help): {$a}';
 $string['totalpenalties'] = 'Total penalties so far: <strong>{$a}</strong>.';
-$string['privacy:metadata'] = 'The RegExp Adaptive mode with Help question behaviour plugin does not store any personal data.';
 
