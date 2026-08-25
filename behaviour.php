@@ -267,7 +267,7 @@ class qbehaviour_regexpadaptivewithhelp extends qbehaviour_adaptive {
         $helppenalty = format_float($penalty, $dp);
         // If total of help penalties >= 1 then display total in red.
         if ($helppenalty >= 1) {
-            $helppenalty = '<span class="flagged-tag">' .$helppenalty . '<span>';
+            $helppenalty = '<span class="flagged-tag">' . $helppenalty . '</span>';
         }
         $output = '';
         $output .= get_string($penaltystring, 'qbehaviour_regexpadaptivewithhelp', $helppenalty).' ';

@@ -1,0 +1,122 @@
+name: Moodle Plugin CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Moodle ${{ matrix.moodle }} / PHP ${{ matrix.php }} / ${{ matrix.database }}
+    runs-on: ubuntu-24.04
+
+    services:
+      postgres:
+        image: ${{ matrix.database == 'pgsql' && 'postgres:17' || '' }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+
+      mariadb:
+        image: ${{ matrix.database == 'mariadb' && 'mariadb:11' || '' }}
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: '1'
+          MYSQL_CHARACTER_SET_SERVER: utf8mb4
+          MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - moodle: '4.5'
+            moodle-branch: MOODLE_405_STABLE
+            php: '8.1'
+            database: mariadb
+          - moodle: '5.0'
+            moodle-branch: MOODLE_500_STABLE
+            php: '8.2'
+            database: pgsql
+          - moodle: '5.1'
+            moodle-branch: MOODLE_501_STABLE
+            php: '8.3'
+            database: mariadb
+          - moodle: '5.2'
+            moodle-branch: MOODLE_502_STABLE
+            php: '8.4'
+            database: pgsql
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v6
+        with:
+          path: plugin
+          persist-credentials: false
+
+      - name: Set up PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: ${{ matrix.extensions }}
+          ini-values: max_input_vars=5000, opcache.enable_cli=1
+          coverage: none
+
+      - name: Initialise moodle-plugin-ci
+        run: |
+          composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci '^4.5.10'
+          echo "$(cd ci/bin && pwd)" >> "$GITHUB_PATH"
+          echo "$(cd ci/vendor/bin && pwd)" >> "$GITHUB_PATH"
+          sudo locale-gen en_AU.UTF-8
+          echo "NVM_DIR=$HOME/.nvm" >> "$GITHUB_ENV"
+
+      - name: Install Moodle and plugin
+        run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
+        env:
+          DB: ${{ matrix.database }}
+          MOODLE_BRANCH: ${{ matrix.moodle-branch }}
+
+      - name: PHP lint
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phplint
+
+      - name: Validate plugin metadata
+        if: ${{ !cancelled() }}
+        run: |
+          moodle-plugin-ci validate
+          moodle-plugin-ci savepoints
+
+      - name: PHPUnit tests
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpunit --fail-on-warning
+
+      # Keep inherited style debt visible while the functional matrix becomes
+      # the compatibility gate for maintenance releases.
+      - name: Legacy code-quality report
+        continue-on-error: true
+        if: ${{ !cancelled() }}
+        run: |
+          status=0
+          moodle-plugin-ci phpcs --max-warnings 0 || status=$?
+          moodle-plugin-ci phpdoc --max-warnings 0 || status=$?
+          moodle-plugin-ci phpmd || status=$?
+          exit "$status"
+
+      - name: Mark cancelled jobs as failed
+        if: ${{ cancelled() }}
+        run: exit 1
